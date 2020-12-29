@@ -8,7 +8,6 @@ class UserController:
     def get_users():
          users = User.query.all()
          users_schema = UserSchema(many=True)
-       
          return users_schema.dump(users)
 
     def get_user(user_id):
@@ -21,14 +20,15 @@ class UserController:
         return user_schema.dump(user)
 
 
-    def create_user(self):
+    def create_user():
         user_schema = UserSchema()
-        date = UserSchema.load(request.get_json())
+        date = user_schema.load(request.get_json())
         if "username" in date and "password" in date:
             user = User.query.filter_by(username=date["username"]).first()
             if user is None:
                 user = User(username=date["username"], password=date["password"])
                 db.session.add(user)
+                # db.session.commit()
                 try:
                     db.session.commit()
                 except:

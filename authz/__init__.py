@@ -24,4 +24,3 @@ def create_app():
     ma.init_app(app)
     app.register_blueprint(apiv1_bp)    #Register /api/v1 to application.
     return app  #Return app instance to caller.
-
