@@ -1,6 +1,6 @@
 from authz import ma
-
 from authz.model import User
+
 
 class UserSchema(ma.SQLAlchemySchema):
     class Meta:

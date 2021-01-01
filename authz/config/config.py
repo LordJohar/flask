@@ -18,4 +18,4 @@ class Config:
 
     JWT_TOKEN_LIFETIME = int(environ.get("AUTHZ_JWT_TOKEN_LIFETIME", 60))
 
-    JWT_ALGORITHM = environ.get("AUTHZ_ALGORITHM", "HS512")
+    JWT_ALGO = environ.get("AUTHZ_ALGORITHM", "HS512")
