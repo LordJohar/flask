@@ -28,7 +28,7 @@ class AuthController:
                         "iss": "auth1",  # issuer
                         "iat": current_time,  # issued at
                         "nbf": current_time,  # not before
-                        "exp": current_time + 9000  # Config.JWT_TOKEN_LIFETIME  # expiration time
+                        "exp": current_time + Config.JWT_TOKEN_LIFETIME  # expiration time
                     },
                     Config.SECRET,
                     algorithm=Config.JWT_ALGO
