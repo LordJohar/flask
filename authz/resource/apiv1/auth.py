@@ -10,9 +10,9 @@ class AuthResource(Resource):
         """
         return AuthController.create_token()
 
-    def get():
+    def get(self):
         """
         GET /auth/tokens --> Verify JWT token
 
         """
-        pass
+        return AuthController.verify_token()

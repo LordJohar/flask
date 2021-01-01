@@ -28,7 +28,7 @@ class AuthController:
                         "iss": "auth1",  # issuer
                         "iat": current_time,  # issued at
                         "nbf": current_time,  # not before
-                        "exp": current_time + Config.JWT_TOKEN_LIFETIME  # expiration time
+                        "exp": current_time + 9000  # Config.JWT_TOKEN_LIFETIME  # expiration time
                     },
                     Config.SECRET,
                     algorithm=Config.JWT_ALGO
@@ -41,20 +41,32 @@ class AuthController:
             abort(400)
 
     def verify_token():
-        if not request.is_json:
+        if not request.is_json:  # If it is not json >>> no problem
             abort(415)
         if "X-Subject-Token" not in request.headers:
             abort(400)
-        jwt_token = request.headers("X-Subject-Token")
+        # we should read the header and verify it
+        jwt_token = request.headers.get("X-Subject-Token")
+
         try:
             jwt_token_data = decode(
                 jwt_token,
                 Config.SECRET,
-                algorithms=[Config.JWT_ALGO]
+                algorithms=[Config.JWT_ALGO]  # if we should not specify this >>> a security breach ("none algorithm")
+                # now we should exception on github page of pyjwt
+                # https://github.com/jpadilla/pyjwt/blob/master/jwt/exceptions.py
+                # https://pyjwt.readthedocs.io/en/stable/api.html
             )
+
         except ExpiredSignatureError:
-            abort(401)
+            abort(401, "Token expired")
         except InvalidTokenError:
-            abort(400, "Invalid Token")
-        except:
-            abort(400,"Some Thing is WRONG!!!")
+            abort(400, "Invalid token")
+        except:  # other exceptions
+            abort(400)
+        user = User.query.get(jwt_token_data["user_id"])  # find the user for verification
+        if user is None:
+            abort(404)  # no user found
+        # we can check other user options like: is_enabled, expiration time
+        user_schema = UserSchema()
+        return {"user": user_schema.dump(user)}, 200, {"X-Subject-Token": jwt_token}  # 200: ok
