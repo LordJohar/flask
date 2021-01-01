@@ -1,5 +1,6 @@
 from os import environ
 
+
 class Config:
 
     DEBUG = bool(environ.get("AUTHZ_DEBUG", False))
